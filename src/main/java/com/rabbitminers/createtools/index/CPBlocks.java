@@ -14,11 +14,5 @@ public class CPBlocks {
             () -> CreateTools.itemGroup
     );
 
-
-    public static final BlockEntry<CasingBlock> DYABLE_CASING = REGISTRATE.block("dyable_casing", CasingBlock::new)
-            .properties(p -> p.color(MaterialColor.PODZOL))
-            .transform(BuilderTransformers.casing(() -> CPSpriteShifts.DYEABLE_CASING))
-            .register();
-
     public static void register() {}
 }
