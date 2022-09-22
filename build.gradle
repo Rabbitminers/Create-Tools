@@ -134,6 +134,9 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
 
+    // Stuff & Additions
+    implementation fg.deobf("curse.maven:alloyed-466792:3875561")
+
     annotationProcessor "org.spongepowered:mixin:0.8.3:processor"
     testAnnotationProcessor "org.spongepowered:mixin:0.8.3:processor"
 }

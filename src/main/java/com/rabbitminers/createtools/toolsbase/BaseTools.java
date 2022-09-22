@@ -14,8 +14,8 @@ public class BaseTools {
             DeferredRegister.create(ForgeRegistries.ITEMS, CreateTools.MODID);
 
     public static final RegistryObject<Item> DRILL = BASETOOLS.register("drill",
-            () -> new PickaxeItem(CTTiers.CREATETOOLMAX, 2, 3f,
-                    new Item.Properties().tab(CreativeModeTab.TAB_BREWING)));
+            () -> new CTDrill(CTTiers.CREATETOOLMAX, 2, 3f,
+                    new Item.Properties().tab(CreateTools.itemGroup)));
     public static void register(IEventBus eventBus) {
         BASETOOLS.register(eventBus);
     }

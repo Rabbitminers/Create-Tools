@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableBlockRegistry;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableItemRegistry;
 import com.rabbitminers.createtools.index.CPBlocks;
+import com.rabbitminers.createtools.toolsbase.BaseTools;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
@@ -22,7 +23,8 @@ import org.slf4j.Logger;
 
 @Mod(CreateTools.MODID)
 public class CreateTools {
-    private static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final Logger LOGGER = LogUtils.getLogger();
     public static final String MODID = "createtools";
 
     private static final NonNullSupplier<CreateRegistrate> registrate = CreateRegistrate.lazy(CreateTools.MODID);
@@ -33,6 +35,7 @@ public class CreateTools {
         CPBlocks.register();
         DraftingTableItemRegistry.register(eventBus);
         DraftingTableBlockRegistry.register(eventBus);
+        BaseTools.register(eventBus);
 
         eventBus.addListener(this::clientSetup);
 
@@ -49,16 +52,11 @@ public class CreateTools {
     private void clientSetup(final FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(
                 DraftingTableBlockRegistry.DRAFTING_TABLE.get(),
-                RenderType.cutout()
+                RenderType.cutout() // Switched from transparent to fix rendering issues
         );
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        // some preinit code
-        LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
-    }
+    private void setup(final FMLCommonSetupEvent event) {}
 
     public static CreateRegistrate registrate() {
         return registrate.get();
