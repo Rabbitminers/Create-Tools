@@ -1,5 +1,6 @@
 package com.rabbitminers.createtools.toolsbase;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -38,7 +39,7 @@ public class CTDrill extends DiggerItem {
     ) {
         if (stack.hasTag()) {
             String fuelCount = stack.getTag().getAsString();
-            components.add(new TextComponent(fuelCount));
+            components.add(new TextComponent(fuelCount).withStyle(ChatFormatting.GRAY));
         }
 
         super.appendHoverText(stack, level, components, tooltipFlag);

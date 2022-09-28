@@ -33,6 +33,7 @@ public class CreateTools {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         CPBlocks.register();
+
         DraftingTableItemRegistry.register(eventBus);
         DraftingTableBlockRegistry.register(eventBus);
         BaseTools.register(eventBus);
