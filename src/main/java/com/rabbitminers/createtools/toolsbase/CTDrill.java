@@ -1,5 +1,6 @@
 package com.rabbitminers.createtools.toolsbase;
 
+import com.rabbitminers.createtools.toolsbase.generators.WindmillTool;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -21,10 +22,32 @@ import java.util.function.Consumer;
 
 public class CTDrill extends DiggerItem {
 
+    int fuel = 1000;
+
     public CTDrill(Tier p_42961_, int p_42962_, float p_42963_, Item.Properties p_42964_) {
         super((float)p_42962_, p_42963_, p_42961_, BlockTags.MINEABLE_WITH_PICKAXE, p_42964_);
     }
 
+    @Override
+    public void inventoryTick(ItemStack stack, Level p_41405_, Entity p_41406_, int p_41407_, boolean p_41408_) {
+        CompoundTag nbt;
+
+        if (stack.hasTag()) {
+            nbt = stack.getTag();
+        } else {
+            nbt = new CompoundTag();
+        }
+
+        if (nbt.contains("Fuel")) {
+            int fuelCount = nbt.getInt("Fuel");
+            nbt.putInt("Fuel", nbt.getInt("Fuel") + 1);
+        } else {
+            nbt.putInt("Fuel", 0);
+        }
+        stack.setTag(nbt);
+
+        super.inventoryTick(stack, p_41405_, p_41406_, p_41407_, p_41408_);
+    }
     @Override
     public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
         return net.minecraftforge.common.ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(toolAction);
@@ -37,9 +60,16 @@ public class CTDrill extends DiggerItem {
             List<Component> components,
             TooltipFlag tooltipFlag
     ) {
+        CompoundTag nbt;
+
         if (stack.hasTag()) {
-            String fuelCount = stack.getTag().getAsString();
-            components.add(new TextComponent(fuelCount).withStyle(ChatFormatting.GRAY));
+            nbt = stack.getTag();
+        } else {
+            nbt = new CompoundTag();
+        }
+
+        if (stack.hasTag()) {
+            components.add(new TextComponent(nbt.getAsString()).withStyle(ChatFormatting.GRAY));
         }
 
         super.appendHoverText(stack, level, components, tooltipFlag);
@@ -47,10 +77,9 @@ public class CTDrill extends DiggerItem {
 
     @Override
     public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
-        /*
-        TODO: UPDATE NBT DATA
-        */
-        System.out.println(stack);
+        if (fuel > 0) {
+            fuel--;
+        }
         return super.damageItem(stack, amount, entity, onBroken);
     }
 
