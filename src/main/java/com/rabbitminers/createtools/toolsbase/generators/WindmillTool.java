@@ -1,6 +1,9 @@
 package com.rabbitminers.createtools.toolsbase.generators;
 
+import com.simibubi.create.foundation.utility.Components;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.tags.TagKey;
@@ -16,7 +19,7 @@ public class WindmillTool extends DiggerItem {
 
     enum DisplayColours {
         NONE(ChatFormatting.DARK_RED, 0),
-        LOW(ChatFormatting.RED, 300),
+        LOW(ChatFormatting.RED, 1),
         MEDIUM(ChatFormatting.YELLOW, 500),
         FAST(ChatFormatting.GREEN, 700);
 
@@ -45,12 +48,11 @@ public class WindmillTool extends DiggerItem {
 
     public int SUout = 0;
     public int maxSU = 1024;
-    public float multiplier = 2.5f;
     public WindmillTool(float p_204108_, float p_204109_, Tier p_204110_, TagKey<Block> p_204111_, Properties p_204112_) {
         super(p_204108_, p_204109_, p_204110_, p_204111_, p_204112_);
     }
 
-    static double logCal( double n, double b) {
+    static double logCal(double n, double b) {
         double c = 0;
         while(n > 1) {
             n = n / b;
@@ -70,7 +72,9 @@ public class WindmillTool extends DiggerItem {
 
         // Generate a value dependent on the yHeight between 0 and the MaxSU
         // Python: (math.floor(math.log((yHeight*(maxSU//377)) + minSU, 1.1))) * 10
-        SUout = (int) Math.floor(logCal(y*(maxSU/377.0f), 1.1)) * 10;
+        // SUout = (int) Math.floor(logCal(y*(maxSU/377.0f), 1.1)) * 10;
+
+        SUout = (int) Math.floor((yHeight/377)*maxSU);
 
         super.inventoryTick(stack, level, entity, p_41407_, p_41408_);
     }
@@ -80,12 +84,35 @@ public class WindmillTool extends DiggerItem {
             ItemStack stack,
             @Nullable Level p_41422_,
             List<Component> components,
-            TooltipFlag tooltipFlag)
-    {
-        ChatFormatting displayColour;
+            TooltipFlag tooltipFlag
+    ) {
+        CompoundTag nbt;
 
-        components.add(new TextComponent(String.valueOf("Stress Output: [" + SUout + "]"))
-                .withStyle(DisplayColours.of(SUout).getTextColor()));
+        if (stack.hasTag()) {
+            nbt = stack.getTag();
+        } else {
+            nbt = new CompoundTag();
+        }
+
+        components.add(new TextComponent(String.valueOf("Stress Output: "))
+                .withStyle(ChatFormatting.DARK_GRAY)
+                .append(new TextComponent(String.valueOf("[" + SUout + "]"))
+                .withStyle(DisplayColours.of(SUout).getTextColor())));
+
+        if (Screen.hasShiftDown()) {
+            components.add(new TextComponent(String.valueOf(
+            "Type: Drill\n Casing: Andesite\nHandle: Andesite\nGenerator: Windmill\nAttachments: None"
+            )).withStyle(ChatFormatting.DARK_GRAY));
+
+        } else {
+            components.add(new TextComponent(String.valueOf(
+            "Type: Drill\n Generator: Windmill\n Attachments: None "
+            )).withStyle(ChatFormatting.DARK_GRAY));
+
+            components.add(new TextComponent(String.valueOf("Hold [SHIFT] for more information"))
+                    .withStyle(ChatFormatting.GRAY));
+        }
+
 
         super.appendHoverText(stack, p_41422_, components, tooltipFlag);
     }
