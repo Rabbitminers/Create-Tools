@@ -2,6 +2,7 @@ package com.rabbitminers.createtools.toolsbase.generators;
 
 import com.simibubi.create.AllItems;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -82,6 +83,7 @@ public class FurnaceEngineTool extends DiggerItem {
     public InteractionResult useOn(UseOnContext useOnContext) {
         Inventory inventory = Objects.requireNonNull(useOnContext.getPlayer()).getInventory();
         int burnTime = ForgeHooks.getBurnTime(useOnContext.getPlayer().getOffhandItem(), RecipeType.SMELTING);
+        ItemStack stack = useOnContext.getItemInHand();
 
         // EntityPlayer.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, ItemStack);
 
@@ -89,9 +91,7 @@ public class FurnaceEngineTool extends DiggerItem {
             return super.useOn(useOnContext);
 
         if (burnTime > 0 && useOnContext.getPlayer().isCrouching()) {
-            System.out.println("Hello world!");
-
-            // TODO: ADD NBT
+            remainingFuel += burnTime*useOnContext.getPlayer().getOffhandItem().getCount();
 
             useOnContext.getPlayer().setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.AIR));
         }
