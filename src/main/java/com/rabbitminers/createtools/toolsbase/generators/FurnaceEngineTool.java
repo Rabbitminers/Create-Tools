@@ -1,7 +1,10 @@
 package com.rabbitminers.createtools.toolsbase.generators;
 
+import com.rabbitminers.createtools.util.CTComponents;
 import com.simibubi.create.AllItems;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -10,10 +13,14 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -33,7 +40,7 @@ import java.util.Objects;
 
 public class FurnaceEngineTool extends DiggerItem {
 
-    double remainingFuel = 4000;
+    double remainingFuel = 1000;
     enum DisplayColours {
         NONE(ChatFormatting.DARK_RED, 0),
         LOW(ChatFormatting.RED, 1),
@@ -71,13 +78,11 @@ public class FurnaceEngineTool extends DiggerItem {
         return remainingFuel;
     }
 
-
     @Override
     public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
-        if (remainingFuel > 0)
-            return net.minecraftforge.common.ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(toolAction);
-        return false;
+        return net.minecraftforge.common.ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(toolAction);
     }
+
 
     @Override
     public InteractionResult useOn(UseOnContext useOnContext) {
@@ -99,17 +104,27 @@ public class FurnaceEngineTool extends DiggerItem {
         return super.useOn(useOnContext);
     }
 
+
+
     @Override
-    public void inventoryTick(ItemStack p_41404_, Level p_41405_, Entity p_41406_, int p_41407_, boolean p_41408_) {
-        if (remainingFuel > 0)
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int p_41407_, boolean p_41408_) {
+        if (remainingFuel > 0) {
             remainingFuel--;
-        super.inventoryTick(p_41404_, p_41405_, p_41406_, p_41407_, p_41408_);
+        } else {
+            LivingEntity player = ((LivingEntity) entity);
+
+            Item item = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+            if (stack.getItem() == item)
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 0, 10));
+        }
+
+        super.inventoryTick(stack, level, entity, p_41407_, p_41408_);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag p_41424_) {
-        components.add(new TextComponent(String.valueOf(Math.ceil(remainingFuel/20)+"s")));
-
+        components.add(new TextComponent(String.valueOf("Time Remaining:" + Math.ceil(remainingFuel/20)+"s"))
+                .withStyle(DisplayColours.of((int) Math.floor(remainingFuel/20)).getTextColor()));
         super.appendHoverText(stack, level, components, p_41424_);
     }
 }

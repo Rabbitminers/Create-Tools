@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SteamEngine extends DiggerItem {
+public class SteamEngineTool extends DiggerItem {
 
     enum DisplayColours {
         NONE(ChatFormatting.DARK_RED, 0),
@@ -32,7 +32,7 @@ public class SteamEngine extends DiggerItem {
         public ChatFormatting getTextColor() { return textColor;}
         public int minOutput() { return minOutput; }
 
-        public static SteamEngine.DisplayColours of(int su) {
+        public static SteamEngineTool.DisplayColours of(int su) {
             if (su >= FAST.minOutput())
                 return FAST;
             if (su >= MEDIUM.minOutput())
@@ -44,13 +44,10 @@ public class SteamEngine extends DiggerItem {
 
     }
 
-    public SteamEngine(float p_204108_, float p_204109_, Tier p_204110_, TagKey<Block> p_204111_, Properties p_204112_) {
+    public SteamEngineTool(float p_204108_, float p_204109_, Tier p_204110_, TagKey<Block> p_204111_, Properties p_204112_) {
         super(p_204108_, p_204109_, p_204110_, p_204111_, p_204112_);
     }
 
-    public void getFuelTime() {
-
-    }
     @Override
     public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> p_41423_, TooltipFlag p_41424_) {
         super.appendHoverText(p_41421_, p_41422_, p_41423_, p_41424_);
