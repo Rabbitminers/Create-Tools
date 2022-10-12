@@ -28,6 +28,10 @@ public class BaseTools {
     public static final RegistryObject<Item> STEAM_ENGINE_DRILL = BASETOOLS.register("steam_engine_drill",
             () -> new FurnaceEngineTool(CTTiers.CREATETOOLMAX, 2, 3f,
                     new Item.Properties().tab(CreateTools.itemGroup)));
+
+    public static final RegistryObject<Item> HAND_CRANK_TOOL = BASETOOLS.register("hand_crank_tool",
+            () -> new HandCrankTool(CTTiers.CREATETOOLMAX, 2, 3f,
+                    new Item.Properties().tab(CreateTools.itemGroup)));
     public static void register(IEventBus eventBus) {
         BASETOOLS.register(eventBus);
     }
