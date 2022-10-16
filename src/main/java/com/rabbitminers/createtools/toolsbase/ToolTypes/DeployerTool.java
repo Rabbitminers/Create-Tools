@@ -1,4 +1,4 @@
-package com.rabbitminers.createtools.toolsbase;
+package com.rabbitminers.createtools.toolsbase.ToolTypes;
 
 import com.rabbitminers.createtools.index.CPTileEntities;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;

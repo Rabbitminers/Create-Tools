@@ -1,37 +1,28 @@
 package com.rabbitminers.createtools.toolsbase.generators;
 
-import com.ibm.icu.text.DecimalFormat;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.FurnaceBlock;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.system.CallbackI;
 
 import java.util.List;
 
-public class HandCrankGenerator extends DiggerItem {
+public class HandCrankTool extends DiggerItem {
 
     int remainingTicks = 0;
     int maxTicks = 1200;
 
-    public HandCrankGenerator(float p_204108_, float p_204109_, Tier p_204110_, TagKey<Block> p_204111_, Properties p_204112_) {
+    public HandCrankTool(float p_204108_, float p_204109_, Tier p_204110_, TagKey<Block> p_204111_, Properties p_204112_) {
         super(p_204108_, p_204109_, p_204110_, p_204111_, p_204112_);
     }
 

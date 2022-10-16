@@ -1,9 +1,9 @@
 package com.rabbitminers.createtools.toolsbase;
 
 import com.rabbitminers.createtools.CreateTools;
+import com.rabbitminers.createtools.toolsbase.ToolTypes.DeployerTool;
 import com.rabbitminers.createtools.toolsbase.generators.FurnaceEngineTool;
-import com.rabbitminers.createtools.toolsbase.windmill.WindmillDrill;
-import net.minecraft.tags.BlockTags;
+import com.rabbitminers.createtools.toolsbase.Windmill.WindmillDrill;
 import net.minecraft.world.item.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

@@ -1,6 +1,8 @@
 package com.rabbitminers.createtools.blocks.draftingtable;
 
 import com.rabbitminers.createtools.CreateTools;
+import com.rabbitminers.createtools.blocks.testtable.TestTableBlock;
+import com.rabbitminers.createtools.blocks.testtable.TestTableBlockEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -21,6 +23,14 @@ public class DraftingTableBlockRegistry {
 
     public static final RegistryObject<Block> DRAFTING_TABLE = registerBlock("drafting_table",
             () -> new DraftingTable(BlockBehaviour
+                    .Properties.of(Material.METAL)
+                    .noOcclusion()
+                    .strength(9f)),
+            CreateTools.itemGroup
+    );
+
+    public static final RegistryObject<Block> TEST = registerBlock("test_table",
+            () -> new TestTableBlock(BlockBehaviour
                     .Properties.of(Material.METAL)
                     .noOcclusion()
                     .strength(9f)),

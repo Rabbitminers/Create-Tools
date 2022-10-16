@@ -1,9 +1,12 @@
 package com.rabbitminers.createtools;
 
 import com.mojang.logging.LogUtils;
+import com.rabbitminers.createtools.armor.CTArmorItems;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableBlockRegistry;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableItemRegistry;
+import com.rabbitminers.createtools.handler.KeybindHandler;
 import com.rabbitminers.createtools.index.CPBlocks;
+import com.rabbitminers.createtools.index.CTBlockEntities;
 import com.rabbitminers.createtools.toolsbase.BaseTools;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -37,6 +40,8 @@ public class CreateTools {
         DraftingTableItemRegistry.register(eventBus);
         DraftingTableBlockRegistry.register(eventBus);
         BaseTools.register(eventBus);
+        CTArmorItems.register(eventBus);
+        CTBlockEntities.register(eventBus);
 
         eventBus.addListener(this::clientSetup);
 
@@ -55,6 +60,9 @@ public class CreateTools {
                 DraftingTableBlockRegistry.DRAFTING_TABLE.get(),
                 RenderType.cutout() // Switched from transparent to fix rendering issues
         );
+
+        MinecraftForge.EVENT_BUS.register(new KeybindHandler());
+        KeybindHandler.onClientSetup();
     }
 
     private void setup(final FMLCommonSetupEvent event) {}
