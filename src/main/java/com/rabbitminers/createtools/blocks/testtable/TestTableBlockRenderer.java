@@ -23,14 +23,16 @@ public class TestTableBlockRenderer implements BlockEntityRenderer<TestTableBloc
     private final ItemRenderer itemRenderer;
     private final EntityRenderDispatcher entityRenderer;
 
+    /*
+    matrixStackIn.translate(0, 0, 1); // Horizontal
+    matrixStackIn.translate(0, 1, 0); // Height
+    matrixStackIn.translate(1, 0, 0); // Horizontal
+    */
+
     public TestTableBlockRenderer(BlockEntityRendererProvider.Context context) {
         this.itemRenderer = minecraft.getItemRenderer();
         this.entityRenderer = minecraft.getEntityRenderDispatcher();
     }
-
-    public int remain = 1000;
-    public int state = 1;
-
     @Override
     public void render(
         TestTableBlockEntity tile,
@@ -51,15 +53,11 @@ public class TestTableBlockRenderer implements BlockEntityRenderer<TestTableBloc
         ItemTransforms.TransformType transform = ItemTransforms.TransformType.FIXED;
         stack = player!=null
                 ? new ItemStack(player.getMainHandItem().getItem())
-                : new ItemStack(Items.DIAMOND);
+                : new ItemStack(Items.AIR);
 
-        /*
-        matrixStackIn.translate(0, 0, 1); // Horizontal
-        matrixStackIn.translate(0, 1, 0); // Height
-        matrixStackIn.translate(1, 0, 0); // Horizontal
-        */
-
+        // Rotation
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(270));
+
         this.itemRenderer.renderStatic(
                 stack, transform, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, 0
         );
