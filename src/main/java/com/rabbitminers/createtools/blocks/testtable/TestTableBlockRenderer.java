@@ -55,6 +55,8 @@ public class TestTableBlockRenderer implements BlockEntityRenderer<TestTableBloc
                 ? new ItemStack(player.getMainHandItem().getItem())
                 : new ItemStack(Items.AIR);
 
+        stack = tile.getDisplayedItem();
+
         // Rotation
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(270));
 
