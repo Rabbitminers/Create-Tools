@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "createtools:block/drafting_table"},
+    "facing=east": { "model": "createtools:block/drafting_table", "y":  90 },
+    "facing=south": { "model": "createtools:block/drafting_table", "y":  180 },
+    "facing=west": { "model": "createtools:block/drafting_table", "y": 270 }
+  }
+}

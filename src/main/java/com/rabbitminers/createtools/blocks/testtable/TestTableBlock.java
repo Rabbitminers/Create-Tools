@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -31,12 +32,6 @@ public class TestTableBlock extends Block implements EntityBlock {
     public TestTableBlock(Properties properties) {
         super(properties);
     }
-
-    public InteractionResult use(BlockState p_54281_, Level level, BlockPos blockPos, Player p_54284_, InteractionHand p_54285_, BlockHitResult p_54286_) {
-        System.out.println(p_54281_);
-        return InteractionResult.CONSUME;
-    }
-
     private static final VoxelShape SHAPE = Stream.of(Block.box(0, 0, 0, 16, 16, 16)).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     @Override

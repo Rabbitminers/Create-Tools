@@ -2,6 +2,7 @@ package com.rabbitminers.createtools.blocks.testtable;
 
 import com.rabbitminers.createtools.index.CTBlockEntities;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -29,29 +30,8 @@ import javax.annotation.Nonnull;
 
 public class TestTableBlockEntity extends BlockEntity {
 
-
     public TestTableBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(CTBlockEntities.TEST_TABLE.get(), p_155229_, p_155230_);
-    }
-
-    public InteractionResult use(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            Player player,
-            InteractionHand hand,
-            BlockHitResult blockHitResult
-    ) {
-        CompoundTag nbt;
-        ItemStack heldItem = player.getItemInHand(hand);
-
-        System.out.println("AA");
-
-        if (heldItem.getItem() == Items.AIR || heldItem.getCount() != 1)
-            return InteractionResult.sidedSuccess(level.isClientSide());
-
-
-        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
 }

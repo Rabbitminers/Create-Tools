@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.rabbitminers.createtools.armor.CTArmorItems;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableBlockRegistry;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableItemRegistry;
+import com.rabbitminers.createtools.blocks.testtable.TestTableBlockRenderer;
 import com.rabbitminers.createtools.handler.KeybindHandler;
 import com.rabbitminers.createtools.index.CPBlocks;
 import com.rabbitminers.createtools.index.CTBlockEntities;
@@ -16,8 +17,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -64,6 +67,7 @@ public class CreateTools {
         MinecraftForge.EVENT_BUS.register(new KeybindHandler());
         KeybindHandler.onClientSetup();
     }
+
 
     private void setup(final FMLCommonSetupEvent event) {}
 
