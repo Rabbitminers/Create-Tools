@@ -41,6 +41,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -66,9 +67,10 @@ import java.util.function.Predicate;
 public class DeployerPlaceTool extends Item {
 
     private Object outlineSlot = new Object();
+    // TODO: Add a config value for this
+    private final int maxVolume = 25;
     BlockPos pos1 = null;
     BlockPos pos2 = null;
-    private int range = 10;
     private Direction selectedFace;
 
     public DeployerPlaceTool(Properties properties) {
@@ -85,8 +87,8 @@ public class DeployerPlaceTool extends Item {
                 BlockItem blockItem = (BlockItem) offhandItem;
                 BlockState state = blockItem.getBlock().defaultBlockState();
 
-                placeBlock(level, state);
-                player.displayClientMessage(new TextComponent("Placed Blocks"), true);
+                if (blockItem != Items.AIR)
+                    placeBlock(level, state, player);
             }
 
             if (pos1 == null || pos2 == null)
@@ -95,7 +97,7 @@ public class DeployerPlaceTool extends Item {
             AABB currentSelectionBox = new AABB(pos1, pos2).expandTowards(1, 1, 1);
             if (player.getMainHandItem() == stack)
                 outliner().chaseAABB(outlineSlot, currentSelectionBox)
-                        .colored(0x6886c5)
+                        .colored(0x6886c5) // 0x6886c5
                         .withFaceTextures(AllSpecialTextures.CHECKERED, AllSpecialTextures.HIGHLIGHT_CHECKERED)
                         .lineWidth(1 / 16f)
                         .highlightFace(selectedFace);
@@ -120,8 +122,12 @@ public class DeployerPlaceTool extends Item {
     }
 
 
-    public void placeBlock(Level level, BlockState state) {
+    public void placeBlock(Level level, BlockState state, Player player) {
         List<BlockPos> blocksToPlace = new ArrayList<BlockPos>();
+        ItemStack offHandItem = player.getOffhandItem();
+
+        if (pos1 == null || pos2 == null)
+            return;
 
         int lX = Math.min(pos1.getX(), pos2.getX());
         int lY = Math.min(pos1.getY(), pos2.getY());
@@ -130,6 +136,20 @@ public class DeployerPlaceTool extends Item {
         int uX = Math.max(pos1.getX(), pos2.getX());
         int uY = Math.max(pos1.getY(), pos2.getY());
         int uZ = Math.max(pos1.getZ(), pos2.getZ());
+
+        int volume = (Math.abs(uX - lX) + 1) * (Math.abs(uY - lY) + 1) * (Math.abs(uZ - lZ) + 1);
+
+        if (volume > maxVolume) {
+            player.displayClientMessage(new TextComponent("Area too large, max volume is " + maxVolume), true);
+            return;
+        }
+
+        if (volume > offHandItem.getCount()) {
+            player.displayClientMessage(new TextComponent("Not enough blocks to fill the area"), true);
+            return;
+        }
+
+        player.getOffhandItem().shrink(volume);
 
         for (int x = lX; x<=uX; x++) {
             for (int y = lY; y<=uY; y++) {
@@ -142,6 +162,9 @@ public class DeployerPlaceTool extends Item {
         for (BlockPos pos : blocksToPlace) {
             level.setBlock(pos, state, 512);
         }
+
+        player.displayClientMessage(new TextComponent("Placed Blocks"), true);
+        pos1 = pos2 = null;
     }
 
 
