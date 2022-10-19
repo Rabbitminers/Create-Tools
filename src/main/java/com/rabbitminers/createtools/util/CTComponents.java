@@ -1,43 +1,56 @@
 package com.rabbitminers.createtools.util;
 
-public class CTComponents {
-    public enum Components {
-        BLAZE_BURNER("blaze_burner", 64, "Automatically smelts all items"),
-        CRUSHING_WHEEL("crushing_wheel", 128, "Mill any block drops"),
-        MILL_STONE("mill_stone", 32, "Mill any block drops"),
-        FILTER("filter", 16, "Filter items that can be collected while tool is held"),
-        MECHANICAL_PRESS("press", 48, "Press any item drops"),
-        EXTENDO_GRIP("extendo_grip", 32, "Extends interaction range"),
-        FLYWHEEL("flywheel", 0, "Increase SU efficiency"),
-        ITEM_VAULT("item_vault", 32, "Store items within the tool"),
-        ROTATIONAL_SPEED_CONTROLLER("rotational_speed_controller", 1, "Increases or decreases the speed of tools, at the cost of SU"),
-        MECHANICAL_ARM("mechanical_arm", 64, "access nearby inventories"),
-        FAN("fan", 128, "Pull items towards the player");
-        private final String name;
-        private final int SUusage;
-        private final String description;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllItems;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
-        Components(
-            String name,
-            int SUusage,
-            String description
-        ) {
-            this.name = name;
-            this.SUusage = SUusage;
-            this.description = description;
+public enum CTComponents {
+    // TODO: make name and description into translatable components
 
+    BLAZE_BURNER("Blaze Burner", AllItems.EMPTY_BLAZE_BURNER.get(), 32, "Hello world"),
+    CRUSHING_WHEEL("Crushing Wheel", AllBlocks.CRUSHING_WHEEL.get().asItem(), 64, "Hello world"),
+    MILL_STONE("Mill Stone", AllBlocks.MILLSTONE.get().asItem(), 16, "Hello world"),
+    ANDESITE_FILTER("Andesite Filter", AllItems.FILTER.get(), 16, "Hello world"),
+    EXTENDO_GRIP("Extend-o-Grip", AllItems.EXTENDO_GRIP.get(), 16, "Hello world");
+
+    private final String name;
+    private final Item item;
+    private final int SUconsumption;
+    private final String description;
+    CTComponents(String name, Item item, int sUconsumption, String description) {
+        this.name = name;
+        this.item = item;
+        SUconsumption = sUconsumption;
+        this.description = description;
+    }
+
+    public static CTComponents of(Item item) {
+        for (CTComponents component : CTComponents.values()) {
+            if (component.item == item)
+                return component;
         }
+        return null;
+    }
 
-        public String getName() {
-            return name;
+    public boolean isValidComponent(Item item) {
+        for (CTComponents component : CTComponents.values()) {
+            if (component.item == item)
+                return true;
         }
+        return false;
+    }
 
-        public int getSUusage() {
-            return SUusage;
-        }
-
-        public String getDescription() {
-            return description;
-        }
+    public String getName() {
+        return name;
+    }
+    public Item getItem() {
+        return item;
+    }
+    public int getSUconsumption() {
+        return SUconsumption;
+    }
+    public String getDescription() {
+        return description;
     }
 }
