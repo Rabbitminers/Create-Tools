@@ -1,10 +1,14 @@
 package com.rabbitminers.createtools.blocks.testtable;
 
 import com.rabbitminers.createtools.util.CTBlockProperties;
+import com.rabbitminers.createtools.util.CTComponents;
 import net.minecraft.BlockUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +32,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.CallbackI;
 
 import java.util.stream.Stream;
 
@@ -52,9 +57,43 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
         if (worldIn.getBlockEntity(pos) instanceof TestTableBlockEntity tile && tile.isAccessibleBy(player)) {
             ItemStack handItem = player.getItemInHand(handIn);
 
+            this.addModifier(player, handItem, tile);
+            System.out.println(tile.getDisplayedItem());
+
             resultType = tile.interact(player, handIn);
         }
         return resultType;
+    }
+
+    public void addModifier(Player player, ItemStack stack, TestTableBlockEntity tile) {
+        if (stack.getItem() == Items.AIR)
+            return;
+
+        // Assert if the item applied is a valid component
+        if (CTComponents.of(stack.getItem()) != null) {
+            // Get tool to update nbt data
+            ItemStack tool = tile.getDisplayedItem();
+            CTComponents component = CTComponents.of(stack.getItem());
+            CompoundTag nbt;
+
+            // Get existing nbt data
+            nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
+
+            if (nbt.contains("components")) {
+                String data = nbt.getString("components");
+                nbt.putString("components", String.valueOf(data + component.getName()));
+            } else {
+                nbt.putString("components", component.getName());
+            }
+
+            player.displayClientMessage(new TextComponent("Added Component"), true);
+            tool.setTag(nbt);
+            stack.shrink(1);
+
+
+        } else {
+            player.displayClientMessage(new TextComponent("Invalid Component"), true);
+        }
     }
 
 

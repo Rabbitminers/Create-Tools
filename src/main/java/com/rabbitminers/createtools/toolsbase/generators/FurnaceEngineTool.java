@@ -39,7 +39,6 @@ import java.util.Objects;
 
 
 public class FurnaceEngineTool extends DiggerItem {
-
     double remainingFuel = 1000;
     enum DisplayColours {
         NONE(ChatFormatting.DARK_RED, 0),

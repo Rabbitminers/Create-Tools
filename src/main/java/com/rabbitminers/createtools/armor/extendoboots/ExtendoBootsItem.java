@@ -37,9 +37,11 @@ public class ExtendoBootsItem extends ArmorItem {
         if (timeOut == 0) {
             if (InputHandler.isHoldingUp(player)) {
                 nbt.putInt("extension", extension+1);
+                player.setDeltaMovement(0, -1, 0);
                 timeOut = 100;
             } else if (InputHandler.isHoldingDown(player)) {
                 nbt.putInt("extension", extension-1);
+                player.setDeltaMovement(0, 1 ,0);
                 timeOut = 100;
             }
         }

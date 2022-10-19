@@ -1,5 +1,8 @@
 package com.rabbitminers.createtools.blocks.draftingtable;
 
+import com.simibubi.create.content.contraptions.components.structureMovement.bearing.WindmillBearingBlock;
+import com.simibubi.create.content.contraptions.components.structureMovement.bearing.WindmillBearingTileEntity;
+import com.simibubi.create.content.contraptions.wrench.IWrenchable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
