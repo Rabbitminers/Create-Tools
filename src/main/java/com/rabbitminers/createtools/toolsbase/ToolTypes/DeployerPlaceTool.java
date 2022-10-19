@@ -148,17 +148,6 @@ public class DeployerPlaceTool extends Item {
     @Override
     public InteractionResult useOn(UseOnContext useOnContext) {
         Player player = useOnContext.getPlayer();
-        Item offhandItem = player.getOffhandItem().getItem();
-
-        /*
-        if (AllKeys.ACTIVATE_TOOL.isPressed() && offhandItem instanceof BlockItem) {
-            BlockItem blockItem = (BlockItem) offhandItem;
-            BlockState state = blockItem.getBlock().defaultBlockState();
-
-            placeBlock(useOnContext, state);
-            player.displayClientMessage(new TextComponent("Placed Blocks"), true);
-        }
-         */
 
         if (player.isCrouching()) {
             pos2 = getBlockPlacePos(useOnContext);
