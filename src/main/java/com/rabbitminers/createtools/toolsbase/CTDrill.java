@@ -26,6 +26,7 @@ public class CTDrill extends DiggerItem {
 
     public CTDrill(Tier p_42961_, int p_42962_, float p_42963_, Item.Properties p_42964_) {
         super((float)p_42962_, p_42963_, p_42961_, BlockTags.MINEABLE_WITH_PICKAXE, p_42964_);
+        this.fuel = 0;
     }
 
     @Override
