@@ -144,12 +144,13 @@ public class DeployerPlaceTool extends Item {
             return;
         }
 
-        if (volume > offHandItem.getCount()) {
+        if (volume > offHandItem.getCount() && !player.isCreative()) {
             player.displayClientMessage(new TextComponent("Not enough blocks to fill the area"), true);
             return;
         }
 
-        player.getOffhandItem().shrink(volume);
+        if (!player.isCreative())
+            player.getOffhandItem().shrink(volume);
 
         for (int x = lX; x<=uX; x++) {
             for (int y = lY; y<=uY; y++) {

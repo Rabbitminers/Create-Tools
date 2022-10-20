@@ -3,6 +3,7 @@ package com.rabbitminers.createtools.toolsbase;
 import com.rabbitminers.createtools.CreateTools;
 import com.rabbitminers.createtools.toolsbase.ToolTypes.DeployerPlaceTool;
 import com.rabbitminers.createtools.toolsbase.ToolTypes.DeployerTool;
+import com.rabbitminers.createtools.toolsbase.ToolTypes.HarvesterTool;
 import com.rabbitminers.createtools.toolsbase.generators.FurnaceEngineTool;
 import com.rabbitminers.createtools.toolsbase.Windmill.WindmillDrill;
 import net.minecraft.world.item.*;
@@ -28,14 +29,16 @@ public class BaseTools {
     public static final RegistryObject<Item> WINDMILL_DRILL = BASETOOLS.register("windmill_drill",
             () -> new WindmillDrill(CTTiers.CREATETOOLMAX, 2, 3f,
                     new Item.Properties().tab(CreateTools.itemGroup)));
-
-    public static final RegistryObject<Item> STEAM_ENGINE_DRILL = BASETOOLS.register("furnace_engine_drill",
+    public static final RegistryObject<Item> FURNACE_ENGINE_DRILL = BASETOOLS.register("furnace_engine_drill",
             () -> new FurnaceEngineTool(CTTiers.CREATETOOLMAX, 2, 3f,
                     new Item.Properties().tab(CreateTools.itemGroup)));
 
     public static final RegistryObject<Item> HAND_CRANK_TOOL = BASETOOLS.register("hand_crank_tool",
             () -> new HandCrankTool(CTTiers.CREATETOOLMAX, 2, 3f,
                     new Item.Properties().tab(CreateTools.itemGroup)));
+
+    public static final RegistryObject<Item> HARVESTER_TOOL = BASETOOLS.register("harvester_tool",
+            () -> new HarvesterTool(new Item.Properties().tab(CreateTools.itemGroup)));
     public static void register(IEventBus eventBus) {
         BASETOOLS.register(eventBus);
     }

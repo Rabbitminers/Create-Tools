@@ -3,6 +3,7 @@ package com.rabbitminers.createtools.tooldata;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public enum CTToolTypes {
 
@@ -19,4 +20,18 @@ public enum CTToolTypes {
         this.name = name;
         this.item = item;
     }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public static CTToolTypes of(Item item) {
+        for (CTToolTypes baseItem : CTToolTypes.values()) {
+            if (item == baseItem.getItem())
+                return baseItem;
+        }
+        return null;
+    }
+
+
 }

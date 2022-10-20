@@ -5,6 +5,7 @@ import com.rabbitminers.createtools.armor.CTArmorItems;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableBlockRegistry;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableItemRegistry;
 import com.rabbitminers.createtools.blocks.testtable.TestTableBlockRenderer;
+import com.rabbitminers.createtools.events.ReplantCrops;
 import com.rabbitminers.createtools.handler.KeybindHandler;
 import com.rabbitminers.createtools.index.CPBlocks;
 import com.rabbitminers.createtools.index.CTBlockEntities;
@@ -24,6 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -39,6 +41,8 @@ public class CreateTools {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         CPBlocks.register();
+
+        eventBus.addListener(this::loadComplete);
 
         DraftingTableItemRegistry.register(eventBus);
         DraftingTableBlockRegistry.register(eventBus);
@@ -66,6 +70,10 @@ public class CreateTools {
 
         MinecraftForge.EVENT_BUS.register(new KeybindHandler());
         KeybindHandler.onClientSetup();
+    }
+
+    private void loadComplete(final FMLLoadCompleteEvent event) {
+        MinecraftForge.EVENT_BUS.register(new ReplantCrops());
     }
 
 

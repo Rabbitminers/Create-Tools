@@ -1,21 +1,15 @@
 package com.rabbitminers.createtools.toolsbase.generators;
 
-import com.rabbitminers.createtools.util.CTComponents;
-import com.simibubi.create.AllItems;
+import com.rabbitminers.createtools.handler.InputHandler;
+import com.rabbitminers.createtools.toolsbase.BaseTools;
+import com.rabbitminers.createtools.util.InventoryUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -23,15 +17,14 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -110,11 +103,11 @@ public class FurnaceEngineTool extends DiggerItem {
         if (remainingFuel > 0) {
             remainingFuel--;
         } else {
-            LivingEntity player = ((LivingEntity) entity);
-
-            Item item = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
-            if (stack.getItem() == item)
-                player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 0, 10));
+            if (entity instanceof LivingEntity player) {
+                Item item = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
+                if (stack.getItem() == item)
+                    player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 0, 10));
+            }
         }
 
         super.inventoryTick(stack, level, entity, p_41407_, p_41408_);
@@ -122,8 +115,29 @@ public class FurnaceEngineTool extends DiggerItem {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag p_41424_) {
-        components.add(new TextComponent(String.valueOf("Time Remaining:" + Math.ceil(remainingFuel/20)+"s"))
-                .withStyle(DisplayColours.of((int) Math.floor(remainingFuel/20)).getTextColor()));
+        components.add(new TextComponent(String.valueOf("Time Remaining:" + Math.ceil(remainingFuel / 20) + "s"))
+                .withStyle(DisplayColours.of((int) Math.floor(remainingFuel / 20)).getTextColor()));
         super.appendHoverText(stack, level, components, p_41424_);
+    }
+
+    /*
+    Save last fuel count on disconnect for all tools
+     */
+
+    @SubscribeEvent
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        Player player = event.getPlayer();
+
+        List<Integer> index = InventoryUtil.getAllInventorySlotIndex(
+                player, BaseTools.FURNACE_ENGINE_DRILL.get()
+        );
+
+        for (int slot : index) {
+            ItemStack stack = player.getInventory().getItem(slot);
+            CompoundTag nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
+
+            nbt.putDouble("fuel", remainingFuel);
+            stack.setTag(nbt);
+        }
     }
 }

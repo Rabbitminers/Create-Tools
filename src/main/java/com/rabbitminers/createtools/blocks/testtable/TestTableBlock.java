@@ -12,6 +12,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -51,14 +52,24 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
 
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn,
-                                 BlockHitResult hit) {
+    public InteractionResult use(
+        BlockState state,
+        Level worldIn,
+        BlockPos pos,
+        Player player,
+        InteractionHand handIn,
+        BlockHitResult hit
+    ) {
         InteractionResult resultType = InteractionResult.PASS;
         if (worldIn.getBlockEntity(pos) instanceof TestTableBlockEntity tile && tile.isAccessibleBy(player)) {
-            ItemStack handItem = player.getItemInHand(handIn);
+            ItemStack stack = player.getItemInHand(handIn);
 
-            this.addModifier(player, handItem, tile);
-            System.out.println(tile.getDisplayedItem());
+            this.addModifier(player, stack, tile);
+            CTComponents toolType = CTComponents.of(stack.getItem());
+
+            if (toolType != null) {
+                player.displayClientMessage(new TextComponent("Creating new tool"), true);
+            }
 
             resultType = tile.interact(player, handIn);
         }

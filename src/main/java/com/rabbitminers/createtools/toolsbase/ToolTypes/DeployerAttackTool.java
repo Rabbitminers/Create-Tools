@@ -1,5 +1,6 @@
 package com.rabbitminers.createtools.toolsbase.ToolTypes;
 
+import com.rabbitminers.createtools.toolsbase.generators.FurnaceEngineTool;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 

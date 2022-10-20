@@ -1,9 +1,13 @@
 package com.rabbitminers.createtools.armor.extendoboots;
 
 import com.rabbitminers.createtools.handler.InputHandler;
+import net.minecraft.client.player.Input;
+import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
@@ -11,6 +15,7 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -34,17 +39,36 @@ public class ExtendoBootsItem extends ArmorItem {
             nbt.putInt("extension", extension);
         }
 
+        Vec3 startPos = extension == 0
+                ? new Vec3(player.getX(), player.getY(), player.getZ())
+                : null;
+
+        // player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 0, 10));
+
+        if (nbt.getInt("extension") != 0) {
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 0, -1));
+            player.setDeltaMovement(0, 0, 0);
+
+            if (startPos != null)
+                player.setPos(new Vec3(startPos.x, startPos.y+extension, startPos.z));
+        }
+
         if (timeOut == 0) {
-            if (InputHandler.isHoldingUp(player)) {
+            if (InputHandler.isHoldingUp(player) && extension < 10) {
                 nbt.putInt("extension", extension+1);
-                player.setDeltaMovement(0, -1, 0);
-                timeOut = 100;
-            } else if (InputHandler.isHoldingDown(player)) {
+                player.setDeltaMovement(0, 1, 0);
+                timeOut = 20;
+            } else if (InputHandler.isHoldingDown(player) && extension > 0) {
                 nbt.putInt("extension", extension-1);
-                player.setDeltaMovement(0, 1 ,0);
-                timeOut = 100;
+                player.setDeltaMovement(0, -1 ,0);
+                timeOut = 20;
             }
         }
+
+        if (player.isCrouching())
+            nbt.putInt("extension", 0);
+
+
         if (timeOut > 0)
             timeOut--;
         super.onArmorTick(stack, level, player);
