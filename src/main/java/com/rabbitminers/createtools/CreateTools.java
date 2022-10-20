@@ -76,9 +76,6 @@ public class CreateTools {
         MinecraftForge.EVENT_BUS.register(new ReplantCrops());
     }
 
-
-    private void setup(final FMLCommonSetupEvent event) {}
-
     public static CreateRegistrate registrate() {
         return registrate.get();
     }
