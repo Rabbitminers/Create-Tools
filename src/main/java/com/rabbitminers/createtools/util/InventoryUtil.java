@@ -8,6 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryUtil {
+
+    public static boolean isFlywheelPresent(ItemStack stack) {
+        if (!stack.hasTag())
+            return false;
+
+        return stack.getTag().getBoolean("flywheel");
+    }
     public static boolean hasPlayerStackInInventory(Player player, Item item) {
         for(int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack currentStack = player.getInventory().getItem(i);

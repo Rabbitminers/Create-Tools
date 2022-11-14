@@ -12,8 +12,8 @@ import java.util.Map;
 public final class InputHandler {
     private static final Map<Player, Boolean> HOLDING_UP = new HashMap<>();
     private static final Map<Player, Boolean> HOLDING_DOWN = new HashMap<>();
-
     private static final Map<Player, Boolean> USE_TOOL = new HashMap<>();
+    private static final Map<Player, Boolean> SWITCH_MODE = new HashMap<>();
 
     public static boolean isHoldingUp(Player player) {
         return HOLDING_UP.containsKey(player) && HOLDING_UP.get(player);
@@ -24,22 +24,28 @@ public final class InputHandler {
     public static boolean isToolUsed(Player player) {
         return USE_TOOL.containsKey(player) && USE_TOOL.get(player);
     }
-    public static void update(Player player, boolean up, boolean down, boolean use) {
+    public static boolean isSwitchUsed(Player player) {
+        return SWITCH_MODE.containsKey(player) && SWITCH_MODE.get(player);
+    }
+    public static void update(Player player, boolean up, boolean down, boolean use, boolean mode) {
         HOLDING_UP.put(player, up);
         HOLDING_DOWN.put(player, down);
         USE_TOOL.put(player, use);
+        SWITCH_MODE.put(player, mode);
     }
 
     public static void remove(Player player) {
         HOLDING_UP.remove(player);
         HOLDING_DOWN.remove(player);
         USE_TOOL.remove(player);
+        SWITCH_MODE.remove(player);
     }
 
     public static void clear() {
         HOLDING_UP.clear();
         HOLDING_DOWN.clear();
         USE_TOOL.clear();
+        SWITCH_MODE.clear();
     }
 
 

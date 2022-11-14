@@ -1,5 +1,6 @@
 package com.rabbitminers.createtools.tooldata;
 
+import com.rabbitminers.createtools.tools.ToolBase;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import net.minecraft.world.item.Item;
@@ -15,6 +16,7 @@ public enum CTToolTypes {
     POTATOCANNON("Potato Cannon Tool", AllItems.POTATO_CANNON.get());
     private String name;
     private Item item;
+    private ToolBase toolClass;
 
     CTToolTypes(String name, Item item) {
         this.name = name;
@@ -24,6 +26,8 @@ public enum CTToolTypes {
     public Item getItem() {
         return item;
     }
+
+    public String getName() { return name; }
 
     public static CTToolTypes of(Item item) {
         for (CTToolTypes baseItem : CTToolTypes.values()) {

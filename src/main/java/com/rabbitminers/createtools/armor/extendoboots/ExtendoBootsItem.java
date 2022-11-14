@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ExtendoBootsItem extends ArmorItem {
-
+    Vec3 originPos = null;
     int timeOut = 0;
     public ExtendoBootsItem(ArmorMaterial p_40386_, EquipmentSlot p_40387_, Properties p_40388_) {
         super(p_40386_, p_40387_, p_40388_);
@@ -32,42 +32,31 @@ public class ExtendoBootsItem extends ArmorItem {
         CompoundTag nbt;
         nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
 
-        int extension = 0;
-        if (nbt.contains("extension")) {
+        int extension;
+        if (nbt.contains("extension"))
             extension = nbt.getInt("extension");
-        } else {
+        else {
+            extension = 0;
             nbt.putInt("extension", extension);
         }
 
-        Vec3 startPos = extension == 0
-                ? new Vec3(player.getX(), player.getY(), player.getZ())
-                : null;
-
-        // player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 0, 10));
-
-        if (nbt.getInt("extension") != 0) {
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 0, -1));
-            player.setDeltaMovement(0, 0, 0);
-
-            if (startPos != null)
-                player.setPos(new Vec3(startPos.x, startPos.y+extension, startPos.z));
-        }
+        if (extension == 0)
+            originPos = new Vec3(player.getX(), player.getY(), player.getZ());
+        else if (originPos != null)
+            player.setPos(new Vec3(originPos.x(), originPos.y() + extension, originPos.z()));
 
         if (timeOut == 0) {
             if (InputHandler.isHoldingUp(player) && extension < 10) {
                 nbt.putInt("extension", extension+1);
-                player.setDeltaMovement(0, 1, 0);
                 timeOut = 20;
             } else if (InputHandler.isHoldingDown(player) && extension > 0) {
                 nbt.putInt("extension", extension-1);
-                player.setDeltaMovement(0, -1 ,0);
                 timeOut = 20;
             }
         }
 
         if (player.isCrouching())
             nbt.putInt("extension", 0);
-
 
         if (timeOut > 0)
             timeOut--;
@@ -77,6 +66,7 @@ public class ExtendoBootsItem extends ArmorItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flag) {
         components.add(new TextComponent(String.valueOf(stack.getTag())));
+        components.add(new TextComponent(String.valueOf(originPos)));
 
         super.appendHoverText(stack, level, components, flag);
     }

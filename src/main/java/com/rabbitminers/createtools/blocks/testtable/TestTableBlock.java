@@ -1,17 +1,27 @@
 package com.rabbitminers.createtools.blocks.testtable;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.rabbitminers.createtools.tooldata.CTGeneratorTypes;
+import com.rabbitminers.createtools.tooldata.CTToolTypes;
+import com.rabbitminers.createtools.tools.ToolBase;
 import com.rabbitminers.createtools.util.CTBlockProperties;
-import com.rabbitminers.createtools.util.CTComponents;
-import net.minecraft.BlockUtil;
+import com.rabbitminers.createtools.tooldata.CTComponents;
+import com.simibubi.create.content.contraptions.components.structureMovement.interaction.controls.TrainHUD;
+import com.simibubi.create.content.contraptions.wrench.WrenchItem;
+import net.minecraft.client.HotbarManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.*;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -32,9 +41,12 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.system.CallbackI;
 
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TestTableBlock extends Block implements EntityBlock, WorldlyContainerHolder {
@@ -45,11 +57,36 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
     }
     private static final VoxelShape SHAPE = Stream.of(Block.box(0, 0, 0, 16, 16, 16)).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
+    public boolean isModifierComponent(ItemStack stack) {
+        return CTComponents.of(stack.getItem()) != null;
+    }
+
+
+    public boolean isBaseToolComponent(ItemStack stack) {
+        return CTToolTypes.of(stack.getItem()) != null;
+    }
+
+
+    public boolean isGeneratorComponent(ItemStack stack) {
+        return CTGeneratorTypes.of(stack.getItem()) != null;
+    }
+
+
+    public boolean isToolComponent(ItemStack stack) {
+        return false;
+    }
+
+    public boolean isToolItem(ItemStack stack) {
+        return stack.getItem() instanceof ToolBase;
+    }
+    public boolean isToolItem(Item item) {
+        return item instanceof ToolBase;
+    }
+
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return SHAPE;
     }
-
 
     @Override
     public InteractionResult use(
@@ -61,14 +98,26 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
         BlockHitResult hit
     ) {
         InteractionResult resultType = InteractionResult.PASS;
+
         if (worldIn.getBlockEntity(pos) instanceof TestTableBlockEntity tile && tile.isAccessibleBy(player)) {
             ItemStack stack = player.getItemInHand(handIn);
+            ItemStack displayedItem = tile.getDisplayedItem();
 
-            this.addModifier(player, stack, tile);
-            CTComponents toolType = CTComponents.of(stack.getItem());
+            CompoundTag nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
+            CompoundTag toolNBT = displayedItem.hasTag() ? stack.getTag() : new CompoundTag();
 
-            if (toolType != null) {
-                player.displayClientMessage(new TextComponent("Creating new tool"), true);
+            if (stack.getItem() instanceof WrenchItem) {
+
+            }
+
+            if (isToolItem(displayedItem) && CTComponents.of(stack.getItem()) != null) {
+                CTComponents component = CTComponents.of(stack.getItem());
+                boolean didApply = appendComponent(displayedItem, toolNBT, component);
+                if (didApply) {
+                    player.displayClientMessage(new TextComponent("Added a " + component), true);
+                    stack.shrink(1);
+                }
+                return InteractionResult.CONSUME;
             }
 
             resultType = tile.interact(player, handIn);
@@ -76,39 +125,32 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
         return resultType;
     }
 
-    public void addModifier(Player player, ItemStack stack, TestTableBlockEntity tile) {
-        if (stack.getItem() == Items.AIR)
-            return;
+    public boolean appendComponent(ItemStack stack, CompoundTag nbt, CTComponents component) {
+        if (nbt.contains("components")) {
+            int[] oldComponents = nbt.getIntArray("components");
 
-        // Assert if the item applied is a valid component
-        if (CTComponents.of(stack.getItem()) != null) {
-            // Get tool to update nbt data
-            ItemStack tool = tile.getDisplayedItem();
-            CTComponents component = CTComponents.of(stack.getItem());
-            CompoundTag nbt;
-
-            // Get existing nbt data
-            nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
-
-            if (nbt.contains("components")) {
-                String data = nbt.getString("components");
-                nbt.putString("components", String.valueOf(data + component.getName()));
-            } else {
-                nbt.putString("components", component.getName());
+            for (int id : oldComponents) {
+                if (id == component.getId()) {
+                    System.out.println("matching!");
+                    return false;
+                }
             }
 
-            player.displayClientMessage(new TextComponent("Added Component"), true);
-            tool.setTag(nbt);
-            stack.shrink(1);
+            List<Integer> newComponents = new ArrayList<>(Arrays.stream(oldComponents).boxed().toList());
+            newComponents.add(component.getId());
 
-
+            nbt.putIntArray("components", newComponents);
+            System.out.println(newComponents);
+            System.out.println(oldComponents);
+            stack.setTag(nbt);
         } else {
-            player.displayClientMessage(new TextComponent("Invalid Component"), true);
+            System.out.println(Collections.singletonList(component.getId()));
+            nbt.putIntArray("components", Collections.singletonList(component.getId()));
+            stack.setTag(nbt);
         }
+
+        return true;
     }
-
-
-
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());

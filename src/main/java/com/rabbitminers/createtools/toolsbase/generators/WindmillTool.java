@@ -86,33 +86,10 @@ public class WindmillTool extends DiggerItem {
             List<Component> components,
             TooltipFlag tooltipFlag
     ) {
-        CompoundTag nbt;
-
-        if (stack.hasTag()) {
-            nbt = stack.getTag();
-        } else {
-            nbt = new CompoundTag();
-        }
-
         components.add(new TextComponent(String.valueOf("Stress Output: "))
                 .withStyle(ChatFormatting.DARK_GRAY)
                 .append(new TextComponent(String.valueOf("[" + SUout + "]"))
                 .withStyle(DisplayColours.of(SUout).getTextColor())));
-
-        if (Screen.hasShiftDown()) {
-            components.add(new TextComponent(String.valueOf(
-            "Type: Drill\n Casing: Andesite\nHandle: Andesite\nGenerator: Windmill\nAttachments: None"
-            )).withStyle(ChatFormatting.DARK_GRAY));
-
-        } else {
-            components.add(new TextComponent(String.valueOf(
-            "Type: Drill\n Generator: Windmill\n Attachments: None "
-            )).withStyle(ChatFormatting.DARK_GRAY));
-
-            components.add(new TextComponent(String.valueOf("Hold [SHIFT] for more information"))
-                    .withStyle(ChatFormatting.GRAY));
-        }
-
 
         super.appendHoverText(stack, p_41422_, components, tooltipFlag);
     }

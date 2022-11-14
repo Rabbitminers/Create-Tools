@@ -1,5 +1,6 @@
 package com.rabbitminers.createtools.toolsbase.generators;
 
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.tags.TagKey;

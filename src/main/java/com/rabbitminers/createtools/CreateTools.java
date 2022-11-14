@@ -5,7 +5,11 @@ import com.rabbitminers.createtools.armor.CTArmorItems;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableBlockRegistry;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableItemRegistry;
 import com.rabbitminers.createtools.blocks.testtable.TestTableBlockRenderer;
+import com.rabbitminers.createtools.config.CTConfig;
+import com.rabbitminers.createtools.events.GUIEvent;
+import com.rabbitminers.createtools.events.ItemPickup;
 import com.rabbitminers.createtools.events.ReplantCrops;
+import com.rabbitminers.createtools.events.TreeChop;
 import com.rabbitminers.createtools.handler.KeybindHandler;
 import com.rabbitminers.createtools.index.CPBlocks;
 import com.rabbitminers.createtools.index.CTBlockEntities;
@@ -13,6 +17,7 @@ import com.rabbitminers.createtools.toolsbase.BaseTools;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -22,7 +27,9 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -39,6 +46,7 @@ public class CreateTools {
 
     public CreateTools() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CTConfig.spec);
 
         CPBlocks.register();
 
@@ -74,6 +82,9 @@ public class CreateTools {
 
     private void loadComplete(final FMLLoadCompleteEvent event) {
         MinecraftForge.EVENT_BUS.register(new ReplantCrops());
+        MinecraftForge.EVENT_BUS.register(new ItemPickup());
+        MinecraftForge.EVENT_BUS.register(new TreeChop());
+        MinecraftForge.EVENT_BUS.register(new GUIEvent(Minecraft.getInstance()));
     }
 
     public static CreateRegistrate registrate() {

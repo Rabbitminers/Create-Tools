@@ -3,22 +3,37 @@ package com.rabbitminers.createtools.blocks.testtable;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.logistics.block.redstone.NixieTubeRenderer;
+import com.simibubi.create.foundation.utility.Color;
+import com.simibubi.create.foundation.utility.Couple;
+import com.simibubi.create.foundation.utility.DyeHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.font.glyphs.BakedGlyph;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SignBlock;
+
+import java.util.Random;
 
 public class TestTableBlockRenderer implements BlockEntityRenderer<TestTableBlockEntity> {
 
+    private static Random r = new Random();
     private final Minecraft minecraft = Minecraft.getInstance();
     private final ItemRenderer itemRenderer;
     private final EntityRenderDispatcher entityRenderer;
@@ -63,6 +78,7 @@ public class TestTableBlockRenderer implements BlockEntityRenderer<TestTableBloc
         this.itemRenderer.renderStatic(
                 stack, transform, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, 0
         );
+
         matrixStackIn.popPose();
     }
 }

@@ -4,6 +4,7 @@ import com.rabbitminers.createtools.handler.InputHandler;
 import com.rabbitminers.createtools.toolsbase.BaseTools;
 import com.rabbitminers.createtools.util.InventoryUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
