@@ -1,0 +1,174 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "createtools:tool_tile_sheet",
+		"1": "create:block/boiler_gauge",
+		"3": "createtools:boiler_gauge",
+		"particle": "create:block/boiler_gauge"
+	},
+	"elements": [
+		{
+			"from": [3, 5, 7],
+			"to": [5, 10, 11],
+			"faces": {
+				"north": {"uv": [12.5, 5.25, 13.5, 3], "texture": "#0"},
+				"east": {"uv": [13.8125, 8.5625, 14.125, 8.9375], "texture": "#0"},
+				"south": {"uv": [14.5, 5.25, 15.5, 3], "texture": "#0"},
+				"west": {"uv": [13, 5.25, 15, 3], "texture": "#0"},
+				"up": {"uv": [12.75, 3.5, 14.75, 4.5], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [12.75, 3.5, 14.75, 4.5], "rotation": 90, "texture": "#0"}
+			}
+		},
+		{
+			"from": [0, 10, 8],
+			"to": [2, 13, 10],
+			"rotation": {"angle": -22.5, "axis": "z", "origin": [0, 0, 0]},
+			"faces": {
+				"north": {"uv": [13.25, 4.5, 14.5, 5.75], "texture": "#0"},
+				"east": {"uv": [12.75, 7.75, 13.75, 9], "texture": "#0"},
+				"south": {"uv": [14.25, 6.5, 15.25, 7.75], "texture": "#0"},
+				"west": {"uv": [14.25, 6.5, 15.25, 7.75], "texture": "#0"},
+				"up": {"uv": [14.25, 6.5, 15.25, 7.75], "texture": "#0"},
+				"down": {"uv": [14.25, 6.5, 15.25, 7.75], "texture": "#0"}
+			}
+		},
+		{
+			"from": [4, 3, 8],
+			"to": [6, 9, 10],
+			"faces": {
+				"north": {"uv": [13.75, 4.75, 16, 5.75], "rotation": 270, "texture": "#0"},
+				"east": {"uv": [13.5, 8.4375, 13.8125, 8.625], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [13.75, 4.75, 16, 5.75], "rotation": 270, "texture": "#0"},
+				"west": {"uv": [11.25, 4, 13.75, 5], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [1, 1, 2, 2], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [12.75, 6.25, 13.75, 7.25], "rotation": 180, "texture": "#0"}
+			}
+		},
+		{
+			"name": "GuageMetalBack",
+			"from": [2.7, 6.05, 7.55],
+			"to": [3.65, 8.95, 10.45],
+			"rotation": {"angle": 0, "axis": "y", "origin": [9, 8, 8]},
+			"faces": {
+				"north": {"uv": [7, 1, 8, 8], "texture": "#3"},
+				"south": {"uv": [7, 1, 8, 8], "texture": "#3"},
+				"west": {"uv": [1, 1, 8, 8], "texture": "#3"},
+				"up": {"uv": [1, 1, 2, 8], "texture": "#3"},
+				"down": {"uv": [7, 1, 8, 8], "texture": "#3"}
+			}
+		},
+		{
+			"name": "GaugeDial",
+			"from": [2.6, 6.75, 8.25],
+			"to": [2.9, 7.15, 9.75],
+			"rotation": {"angle": 0, "axis": "y", "origin": [16.1, 5.75, 8.25]},
+			"faces": {
+				"north": {"uv": [0, 11, 1, 12], "rotation": 180, "texture": "#1"},
+				"east": {"uv": [0, 11, 5, 12], "rotation": 180, "texture": "#1"},
+				"south": {"uv": [4, 11, 5, 12], "rotation": 180, "texture": "#1"},
+				"west": {"uv": [5, 11, 0, 12], "rotation": 180, "texture": "#1"},
+				"up": {"uv": [0, 11, 5, 12], "rotation": 90, "texture": "#1"},
+				"down": {"uv": [0, 11, 5, 12], "rotation": 270, "texture": "#1"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [2.97, -3.1, -15.96],
+			"translation": [0.5, -2.25, -4.5],
+			"scale": [0.65, 0.65, 0.65]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [2, 0, 31],
+			"translation": [0.5, -5, -1],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"firstperson_righthand": {
+			"rotation": [24, 7, 0],
+			"translation": [3, -0.75, 0],
+			"scale": [0.68, 0.68, 0.68]
+		},
+		"firstperson_lefthand": {
+			"rotation": [24, 7, 0],
+			"translation": [3, -0.75, 0],
+			"scale": [0.68, 0.68, 0.68]
+		},
+		"ground": {
+			"translation": [0, 2, 0],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"gui": {
+			"rotation": [30, 135, 0],
+			"translation": [2.75, 0, 0],
+			"scale": [0.79, 0.79, 0.79]
+		},
+		"head": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 13, 7]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [4.75, -0.5, -1.25]
+		}
+	},
+	"groups": [
+		{
+			"name": "brass_portable_drill",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [
+				{
+					"name": "group",
+					"origin": [0, 0, 0],
+					"color": 0,
+					"children": []
+				},
+				{
+					"name": "group",
+					"origin": [0, 0, 0],
+					"color": 0,
+					"children": []
+				},
+				{
+					"name": "group",
+					"origin": [0, 0, 0],
+					"color": 0,
+					"children": []
+				},
+				{
+					"name": "group",
+					"origin": [0, 0, 0],
+					"color": 0,
+					"children": []
+				},
+				{
+					"name": "group",
+					"origin": [0, 0, 0],
+					"color": 0,
+					"children": []
+				},
+				{
+					"name": "group",
+					"origin": [0, 0, 0],
+					"color": 0,
+					"children": []
+				}
+			]
+		},
+		0,
+		1,
+		2,
+		{
+			"name": "gauge",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [3]
+		},
+		{
+			"name": "gauge_dial",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [4]
+		}
+	]
+}
