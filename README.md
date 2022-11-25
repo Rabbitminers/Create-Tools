@@ -60,10 +60,80 @@ Outputs a constant rate of SU similarly to furnace engine removed from Create in
 <hr/>
 
 ### Hand Crank
-[Not Implemented] The handcrank works similarly to a wind up toy where at the cost of hunger you can charge it up to a maximum 30 seconds of run time where the crank will slowly unwind outputting a small quantity of SU, making it useful for your first few tools or for tools that are used briefly and anywhere such as using a deployer to transport tile entities or mobs.
+[Implemented] The handcrank works similarly to a wind up toy where at the cost of hunger you can charge it up to a maximum 30 seconds of run time where the crank will slowly unwind outputting a small quantity of SU, making it useful for your first few tools or for tools that are used briefly and anywhere such as using a deployer to transport tile entities or mobs.
 
 <img src="https://media.discordapp.net/attachments/1014563886491500615/1018250356574130206/unknown.png?width=810&height=581" alt="drawing" style="width:400px;"/>
 
+### Pressure Generator
+[Coming soon] - will use fuel from the copper back tank like a potato cannon
+
 <hr/>
+
+</details>
+
+<details>
+<summary> Components (Click to show)</summary>
+* NOTICE - not all components that are planned or even implemented are here yet  *
+<br/>
+
+<hr/>
+
+### Blaze Burner
+When used with most tools the blaze burner will automatically smelt block and mob drops consuming a small amount of fuel in the process, as well as this it can also be used as flint and steel when needed. When combined with an encased fan it will blow out hot hair smelting collected items and burning entities ahead of it. When used on a potato cannon it will light your projectiles allowing you to burn your targets from a distance (Each of these effects are modifiable in config, by default potato cannon shots will not set blocks alight to avoid accidental greifing)
+
+<hr/>
+
+### Flywheel
+The flywheel makes your tools more efficent, when used with a furnace or steam engine fuel will last longer allowing you to keep using them for longer. When used with a windmill your kinetic energy will be stored in the flywheel and then slowly outputed allowing you to temporarily gather a small amount of power when there is no wind such as when mining. When combined with a hand crank the flywheel allows for a longer time to be stored. More designs will be availabe when <a href=https://www.curseforge.com/minecraft/mc-mods/create-extended-flywheels>Extended Flywheels</a> is present.
+
+<hr/>
+
+### Filters
+Filters allow you to restrict the items that enter your inventory either by filtering specific items or tags/groups preventing your inventory from becoming clogged when mining or when excavating large areas
+
+<hr/>
+
+### Mechanical Arm
+The mechanical arm allows for blocks to be carefully broken like when using silk touch (configurable to allow for spawners to be moved - disabled by default) Aswell as this when building you can pick from a number of modes to help you such as randomizing placed blocks, replacing broken blocks with the item in your offhand and rotating blocks with out having to replace them so you dont need a wrench at all times. When combined with  the item vault food can be automatically pulled and feed to the player.
+
+<hr/>
+
+### Spyglass
+The spyglass allows you to see into the distance (spyglass overlay is configurable) which can be particuarly useful when combined with the potato cannon for increased accuracy at distance
+
+<hr/>
+
+### Encased Fan
+The encased fan is useful for many purposes, it has three states, push, pull and off. While push is active all mobs and items in a straigt line ahead will be blown away, when combined with a blaze burner this will also burn them and when stacked with a nozzle these effects will be distributed in a sector infront of the player. When pull is active entities will be pulled towads the player and item pickup range is increased, a blaze burner will cause any blown items to be smelted and again a nozzle will distribute these effects. As you may not want these at all times the fan can be toggled off at any time reducing the SU consumption.
+
+<hr/>
+
+### Extendo-Grip
+The Extendo-grip increases the reach distance of your tools and in the case of the potato cannon causes your shots to be launched at greater speed (this can be very useful when combined with  a spyglass to handle the extra distance)
+
+<hr/>
+
+### Nixie Tube
+The nixie tube displays your current fuel levels for any of the generators, time remaining on a handcrank and stress output on a windmill making it much quicker to check how long left you have. (This can also be enabled as  a HUD element). Aswell as this the nixie tubes will flash when near ores when combined with  a drill, near mobs when combined with any kind of weaponry such as the potato cannon or deployer (when in attack mode) and when your are low on fuel and are about to loose power.
+
+<hr/>
+
+### Electron Tube
+The electron tube allows for dynamic lighting if mods such as magnesium extras are present so that your offhand can be used for food, a sheild etc when exploring aswell as this they will integrate with <a href=https://www.curseforge.com/minecraft/mc-mods/create-powderlogy>Powderlogy & Illumination<a/> creating special effects for each variant of tube.
+
+<hr/>
+
+### Clock
+The clock will display either the ingame time or real world time on the tool (and toggle-ably in the ingame HUD) for when you accidentally spend far too long playing Minecraft and need to be reminded to do something productive.
+
+<hr/>
+
+### Item Vault
+The item vault acts as a mini-backpack on your tool expanding its storage, fuel will automatically be pulled from this storage if you are using a steam engine or furnace engine. Aswell as this the deployer/mechanical arm can pull from this inventory when placing randomized blocks for greater variation in your builds. When combined with the mechanical arm once your inventory is filled items will automatically fill the vault to act as an overflow. (If the PR is accepted these vaults will also become dyeable)
+
+<hr/>
+
+### Millstone
+The millsonte automatically mills picked up blocks  (applies before the blaze burner if it is active) to allow for quick resource processing at the cost of higher resource consomption than doing it using a millstone block. Aswell as this when combined with a potato cannon all shots will be shredded and turned into buckshot reducing there range and damage/projectile but vastly increasing the AOE of the shot. This can be stacked with the blaze burner for greater effect.
 
 </details>
