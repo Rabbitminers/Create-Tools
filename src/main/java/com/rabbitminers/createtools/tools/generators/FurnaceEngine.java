@@ -1,9 +1,11 @@
 package com.rabbitminers.createtools.tools.generators;
 
 import com.rabbitminers.createtools.handler.GeneratorHandler;
+import com.rabbitminers.createtools.tooldata.CTComponents;
 import com.rabbitminers.createtools.tooldata.CTGeneratorTypes;
 import com.rabbitminers.createtools.tools.ToolBase;
 import com.rabbitminers.createtools.tools.data.display.FurnaceEngineFuelData;
+import com.rabbitminers.createtools.util.ToolUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -64,7 +66,20 @@ public class FurnaceEngine extends Generator {
             this.remainingTicks = isFlywheelPresent(stack) ? remainingTicks-0.75 : remainingTicks-1;
             this.runningTicks++;
 
-            this.SUout = maxSU*(this.runningTicks/this.warmUpTicks);
+            if (ToolUtils.toolContainsComponent(stack, CTComponents.ROTATIONAL_SPEED_CONTROLLER)) {
+                CompoundTag nbt = stack.hasTag()
+                        ? stack.getTag()
+                        : new CompoundTag();
+
+                if (nbt.contains("rpm_control")) {
+                    int RPMControllerSpeed = nbt.getInt("rpm_control");
+
+                    if (RPMControllerSpeed > maxSU) {
+
+                    }
+                } else
+                    this.SUout = maxSU*(this.runningTicks/this.warmUpTicks);
+            }
         } else {
             this.runningTicks = 0;
             this.SUout = 0;

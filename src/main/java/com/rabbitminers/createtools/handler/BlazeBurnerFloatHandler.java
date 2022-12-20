@@ -35,11 +35,11 @@ public final class BlazeBurnerFloatHandler {
 
             if (generator.getRPM() != 0) {
                 if (currentHeight > 2.5f/16f && goingUp) UUID_FLOAT_MAP.put(uuid,
-                        new Pair<>(currentHeight-step, false));
+                    new Pair<>(currentHeight-step, false));
                 else if (currentHeight < 0.2f/16f && !goingUp) UUID_FLOAT_MAP.put(uuid,
-                        new Pair<>(currentHeight+step, true));
+                    new Pair<>(currentHeight+step, true));
                 else UUID_FLOAT_MAP.put(uuid,
-                        new Pair<>(currentHeight+(goingUp ? +step : -step), goingUp));
+                    new Pair<>(currentHeight+(goingUp ? +step : -step), goingUp));
             } else
                 UUID_FLOAT_MAP.put(uuid, new Pair<Float, Boolean>(currentHeight, false));
         } else

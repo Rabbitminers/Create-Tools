@@ -130,7 +130,7 @@ public class FurnaceEngineTool extends DiggerItem {
         Player player = event.getPlayer();
 
         List<Integer> index = InventoryUtil.getAllInventorySlotIndex(
-                player, BaseTools.FURNACE_ENGINE_DRILL.get()
+                player, BaseTools.DEPLOYER_TOOL.get()
         );
 
         for (int slot : index) {

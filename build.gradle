@@ -136,6 +136,8 @@ dependencies {
 
     // Stuff & Additions
     implementation fg.deobf("curse.maven:alloyed-466792:3875561")
+    // Damage Indicators
+    implementation fg.deobf("curse.maven:di-245733:3556931")
 
     annotationProcessor "org.spongepowered:mixin:0.8.3:processor"
     testAnnotationProcessor "org.spongepowered:mixin:0.8.3:processor"

@@ -19,7 +19,10 @@ public class DrillToolModel extends CreateToolsCustomRenderedItemModel {
             "spyglass",
             "electron_tube",
             "steam_engine",
-            "windmill"
+            "windmill",
+            "encased_fan",
+            "fan_blades",
+            "rsc"
         );
     }
 }

@@ -1,30 +1,50 @@
 package com.rabbitminers.createtools.tools;
 
+import com.mojang.math.Vector3f;
 import com.rabbitminers.createtools.handler.GeneratorHandler;
 import com.rabbitminers.createtools.tooldata.CTGeneratorTypes;
 import com.rabbitminers.createtools.tooldata.CTToolTypes;
 import com.rabbitminers.createtools.tooldata.CTComponents;
 import com.rabbitminers.createtools.tools.generators.*;
 import com.rabbitminers.createtools.render.tools.render.DrillToolRender;
+import com.rabbitminers.createtools.tools.tooltypes.base.DeployerTool;
 import com.rabbitminers.createtools.util.ToolUtils;
+import com.simibubi.create.AllParticleTypes;
+import com.simibubi.create.content.contraptions.components.fan.AirCurrent;
+import com.simibubi.create.content.contraptions.components.fan.EncasedFanRenderer;
+import com.simibubi.create.content.contraptions.components.fan.EncasedFanTileEntity;
+import com.simibubi.create.content.contraptions.particle.AirFlowParticle;
+import com.simibubi.create.content.contraptions.particle.AirFlowParticleData;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.entity.LeashKnotRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
@@ -35,9 +55,15 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.gui.OverlayRegistry;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,15 +72,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static com.simibubi.create.content.contraptions.components.fan.AirCurrent.isPlayerCreativeFlying;
+
 public class ToolBase extends Item {
     CTToolTypes toolType;
     private int SUout;
     private double remainingTicks;
-
-    FurnaceEngine furnaceEngine;
-    HandCrank handCrank;
-    SteamEngine steamEngine;
-    Windmill windmill;
     public ToolBase(Properties properties) {
         super(properties);
         this.SUout = 0;
@@ -82,11 +105,11 @@ public class ToolBase extends Item {
         return CTGeneratorTypes.of(nbt.getInt("generator"));
     }
 
-    public void getRPM(ItemStack stack) {
+    public int getRPM(ItemStack stack) {
         if (getActiveComponents(stack).contains(CTComponents.ROTATIONAL_SPEED_CONTROLLER))
-            return;
+            return 0;
         else {
-            CTGeneratorTypes.of(stack.getItem());
+            return (int) Math.floor(getGeneratorOfTool(stack).getRPM());
         }
     }
 
@@ -157,7 +180,6 @@ public class ToolBase extends Item {
         CompoundTag nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
         if (nbt != null && nbt.hasUUID("toolid")) {
             Generator generator = GeneratorHandler.getGeneratorOfUUID(nbt.getUUID("toolid"));
-
             if (generator != null) {
                 return generator;
             } else {
@@ -196,14 +218,108 @@ public class ToolBase extends Item {
             if (mainHandItem.getItem() instanceof ToolBase) {
                 UUID stackUUID = stackNBT.getUUID("toolid");
                 UUID heldToolUUID = heldToolNBT.getUUID("toolid");
-
+                /*
                 if (stackUUID.equals(heldToolUUID) && generator.SUout <= 0)
-                    player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 0, 10));
+                    // player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 0, 10));
+                    System.out.println();
+                */
+                if (this.toolContainsComponent(stack, CTComponents.ENCASED_FAN) && generator.SUout >= 0)
+                    encasedFanTick(stack, level, entity, p_41407_, p_41408_);
             }
 
         }
 
         super.inventoryTick(stack, level, entity, p_41407_, p_41408_);
+    }
+    public void encasedFanTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected){
+        CompoundTag tag = stack.getOrCreateTag();
+        int r = 5;
+        AABB area = new AABB(entityIn.position().add(-r, -r, -r), entityIn.position().add(r, r, r));
+
+        List<ItemEntity> items = worldIn.getEntities(EntityType.ITEM, area,
+                item -> item.isAlive() && (!worldIn.isClientSide || item.tickCount > 1) &&
+                        (item.getThrower() == null || !item.getThrower().equals(entityIn.getUUID()) || !item.hasPickUpDelay()) &&
+                        !item.getItem().isEmpty() && !item.getPersistentData().contains("PreventRemoteMovement")
+        );
+        items.forEach(item -> item.setPos(entityIn.getX(), entityIn.getY(), entityIn.getZ()));
+        // Directly add items to the player's inventory when ItemPhysic is installed
+        if(!worldIn.isClientSide && entityIn instanceof Player && ModList.get().isLoaded("itemphysic"))
+            items.forEach(item -> playerTouch(item, (Player)entityIn));
+
+
+        if(!worldIn.isClientSide && entityIn instanceof Player){
+            Player player = (Player)entityIn;
+            List<ExperienceOrb> orbs = worldIn.getEntitiesOfClass(ExperienceOrb.class, area);
+            orbs.forEach(orb -> {
+                orb.invulnerableTime = 0;
+                player.takeXpDelay = 0;
+                orb.playerTouch(player);
+            });
+        }
+
+        if (entityIn instanceof Player player) {
+            Vector3f ParticleColour = new Vector3f(Vec3.fromRGB24(16777215));
+            Vec3 playerFacingVector = player.getLookAngle();
+
+            Vec3 appliedMotion = playerFacingVector
+                    .multiply(0.5D, 0.5D, 0.5D)
+                    .normalize()
+                    .scale(0.6*2);
+            worldIn.addParticle(new DustParticleOptions(ParticleColour, 0.4F), player.getX()+playerFacingVector.x, player.getY()+1.5, player.getZ()+playerFacingVector.y, appliedMotion.x, appliedMotion.y, appliedMotion.z);
+        }
+
+        HitResult objectMouseOver = Minecraft.getInstance().hitResult;
+        if (objectMouseOver instanceof EntityHitResult entityHitResult && entityIn instanceof Player player) {
+            Entity entity = entityHitResult.getEntity();
+
+            if (!(entity instanceof LivingEntity))
+                return;
+
+            LivingEntity livingEntity = (LivingEntity) entity;
+            Vec3 playerFacingVector = player.getLookAngle();
+
+            Vec3 appliedMotion = playerFacingVector
+                    .multiply(1.0D, 0.0D, 1.0D)
+                    .normalize()
+                    .scale(10 * 0.6);
+
+            if (appliedMotion.lengthSqr() > 0.0D) {
+                System.out.println("Pushed!");
+                System.out.println(appliedMotion);
+                livingEntity.push(appliedMotion.x, 0.1D, appliedMotion.z);
+                livingEntity.causeFallDamage(100, 100, DamageSource.FALL);
+            }
+
+        }
+    }
+
+    private static void playerTouch(ItemEntity itemEntity, Player player){
+        if (!itemEntity.level.isClientSide) {
+            if (itemEntity.hasPickUpDelay()) return;
+            ItemStack itemstack = itemEntity.getItem();
+            Item item = itemstack.getItem();
+            int i = itemstack.getCount();
+
+            int hook = net.minecraftforge.event.ForgeEventFactory.onItemPickup(itemEntity, player);
+            if (hook < 0) return;
+
+            ItemStack copy = itemstack.copy();
+
+            if (!itemEntity.hasPickUpDelay() && (itemEntity.getOwner() == null || itemEntity.lifespan - itemEntity.getAge() <= 200 || itemEntity.getOwner().equals(player.getUUID())) && (hook == 1 || i <= 0 || player.getInventory().add(itemstack))) {
+                copy.setCount(copy.getCount() - itemstack.getCount());
+                net.minecraftforge.event.ForgeEventFactory.firePlayerItemPickupEvent(player, itemEntity, copy);
+                player.take(itemEntity, i);
+
+                if (itemstack.isEmpty()) {
+                    itemEntity.discard();
+                    itemstack.setCount(i);
+                }
+
+                player.awardStat(Stats.ITEM_PICKED_UP.get(item), i);
+                player.onItemPickup(itemEntity);
+            }
+
+        }
     }
 
     @Override
@@ -215,7 +331,11 @@ public class ToolBase extends Item {
         components.add(new TextComponent("Components: ").withStyle(ChatFormatting.GRAY));
 
         for (CTComponents component : getActiveComponents(stack)) {
-            components.add(new TextComponent("- " + component.getName()).withStyle(ChatFormatting.DARK_GRAY));
+            if (component == null) continue;
+            String componentName = component.getName() != null
+                    ? component.getName()
+                    : "Invalid Component";
+            components.add(new TextComponent("- " + componentName).withStyle(ChatFormatting.DARK_GRAY));
             if (Screen.hasShiftDown())
                 components.add(new TextComponent(component.getDescription()).withStyle(ChatFormatting.DARK_GRAY).withStyle(ChatFormatting.ITALIC));
         }
@@ -253,16 +373,18 @@ public class ToolBase extends Item {
     }
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (this.toolContainsComponent(player.getMainHandItem(), CTComponents.SPYGLASS)) {
-            return super.use(level, player, hand);
-        }
+        if (this.toolContainsComponent(player.getMainHandItem(), CTComponents.SPYGLASS))
+            return ItemUtils.startUsingInstantly(level, player, hand);
         return super.use(level, player, hand);
     }
 
 
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos blockPos, LivingEntity livingEntity) {
-        if (this.toolContainsComponent(stack, CTComponents.MECHANICAL_ARM) && livingEntity instanceof Player player && player.getOffhandItem().getItem() instanceof BlockItem blockItem) {
+        if (this.toolContainsComponent(stack, CTComponents.MECHANICAL_ARM)
+            && livingEntity instanceof Player player
+            && player.getOffhandItem().getItem() instanceof BlockItem blockItem
+        ) {
             player.getOffhandItem().shrink(1);
             level.setBlock(blockPos, blockItem.getBlock().defaultBlockState(), 512);
         }

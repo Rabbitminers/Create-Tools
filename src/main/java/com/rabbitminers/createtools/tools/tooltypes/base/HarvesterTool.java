@@ -9,12 +9,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class HarvesterTool extends ToolBase {
     private final TagKey<Block> blocks;
-    protected final float speed;
 
     public HarvesterTool(Properties p_41383_, TagKey<Block> blocks, float speed) {
         super(p_41383_);
         this.blocks = blocks;
-        this.speed = speed;
     }
 
     @Override
@@ -24,6 +22,6 @@ public class HarvesterTool extends ToolBase {
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        return state.is(this.blocks) ? this.speed : 1.0F;
+        return 0;
     }
 }

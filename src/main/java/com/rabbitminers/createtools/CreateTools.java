@@ -4,12 +4,9 @@ import com.mojang.logging.LogUtils;
 import com.rabbitminers.createtools.armor.CTArmorItems;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableBlockRegistry;
 import com.rabbitminers.createtools.blocks.draftingtable.DraftingTableItemRegistry;
-import com.rabbitminers.createtools.blocks.testtable.TestTableBlockRenderer;
+import com.rabbitminers.createtools.blocks.testtable.TestTableCameraHandler;
 import com.rabbitminers.createtools.config.CTConfig;
-import com.rabbitminers.createtools.events.GUIEvent;
-import com.rabbitminers.createtools.events.ItemPickup;
-import com.rabbitminers.createtools.events.ReplantCrops;
-import com.rabbitminers.createtools.events.TreeChop;
+import com.rabbitminers.createtools.events.*;
 import com.rabbitminers.createtools.handler.KeybindHandler;
 import com.rabbitminers.createtools.index.CPBlocks;
 import com.rabbitminers.createtools.index.CTBlockEntities;
@@ -22,16 +19,12 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -85,11 +78,11 @@ public class CreateTools {
         MinecraftForge.EVENT_BUS.register(new ItemPickup());
         MinecraftForge.EVENT_BUS.register(new TreeChop());
         MinecraftForge.EVENT_BUS.register(new GUIEvent(Minecraft.getInstance()));
+        MinecraftForge.EVENT_BUS.register(new TestTableCameraHandler());
+        MinecraftForge.EVENT_BUS.register(new CompassOverlayEvent(Minecraft.getInstance()));
     }
 
     public static CreateRegistrate registrate() {
         return registrate.get();
     }
-
-
 }

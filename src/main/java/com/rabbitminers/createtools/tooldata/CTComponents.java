@@ -21,7 +21,9 @@ public enum CTComponents {
     SPYGLASS(7, "Spyglass", Items.SPYGLASS.asItem(), 16, "Hello world!"),
     FLYWHEEL(8, "Flywheel", AllBlocks.FLYWHEEL.get().asItem(), 0, "Hello world!"),
     CLOCK(9, "Clock", Items.CLOCK.asItem(), 16 ,"Hello world!"),
-    ELECTRON_TUBE(10, "Electron Tube", AllItems.ELECTRON_TUBE.get(), 24, "Hello world!");
+    ELECTRON_TUBE(10, "Electron Tube", AllItems.ELECTRON_TUBE.get(), 24, "Hello world!"),
+    ENCASED_FAN(11, "Encased Fan", AllBlocks.ENCASED_FAN.get().asItem(), 32, "Hello world!"),
+    COMPASS(12, "Compass", Items.COMPASS.asItem(), 16, "Hello world!");
 
     private final int id;
     private final String name;

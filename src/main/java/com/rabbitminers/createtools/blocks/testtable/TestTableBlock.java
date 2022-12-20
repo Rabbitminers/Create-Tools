@@ -18,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
@@ -56,6 +57,7 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
         super(properties);
     }
     private static final VoxelShape SHAPE = Stream.of(Block.box(0, 0, 0, 16, 16, 16)).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+    boolean active = false;
 
     public boolean isModifierComponent(ItemStack stack) {
         return CTComponents.of(stack.getItem()) != null;
@@ -82,6 +84,7 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
     public boolean isToolItem(Item item) {
         return item instanceof ToolBase;
     }
+    public void toggleActive() {this.active = !active;}
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
@@ -99,7 +102,17 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
     ) {
         InteractionResult resultType = InteractionResult.PASS;
 
-        if (worldIn.getBlockEntity(pos) instanceof TestTableBlockEntity tile && tile.isAccessibleBy(player)) {
+        if (worldIn.getBlockEntity(pos) instanceof TestTableBlockEntity tile && tile.isAccessibleBy(player) && !player.getCooldowns().isOnCooldown(player.getUseItem().getItem())) {
+            player.getCooldowns().addCooldown(player.getUseItem().getItem(), 20);
+            TestTableCameraController controller = getCameraController(worldIn, pos);
+            // controller.disable();
+            if (controller != null) {
+                controller.setDirection(state.getValue(FACING));
+                controller.enable();
+
+                TestTableCameraHandler.update(player.getUUID(), controller);
+            }
+
             ItemStack stack = player.getItemInHand(handIn);
             ItemStack displayedItem = tile.getDisplayedItem();
 
@@ -122,6 +135,7 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
 
             resultType = tile.interact(player, handIn);
         }
+
         return resultType;
     }
 
@@ -131,7 +145,6 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
 
             for (int id : oldComponents) {
                 if (id == component.getId()) {
-                    System.out.println("matching!");
                     return false;
                 }
             }
@@ -180,6 +193,13 @@ public class TestTableBlock extends Block implements EntityBlock, WorldlyContain
         if (state.getValue(HAS_ITEM))
             return (TestTableBlockEntity) level.getBlockEntity(pos);
         return new TileLessContainer(state, level, pos);
+    }
+
+    public TestTableCameraController getCameraController(LevelAccessor level, BlockPos pos) {
+        TestTableBlockEntity blockEntity = (TestTableBlockEntity) level.getBlockEntity(pos);
+        if (blockEntity != null)
+            return blockEntity.getController();
+        return null;
     }
 
     static class TileLessContainer extends SimpleContainer implements WorldlyContainer {

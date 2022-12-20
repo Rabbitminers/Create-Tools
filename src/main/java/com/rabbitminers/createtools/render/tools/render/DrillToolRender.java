@@ -30,10 +30,11 @@ public class DrillToolRender extends CustomRenderedItemModelRenderer<DrillToolMo
     protected void render(ItemStack stack, DrillToolModel model, PartialItemModelRenderer renderer, ItemTransforms.TransformType transformType,
                           PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
         renderer.render(model.getOriginalModel(), light);
-
+        // Render static handle at origin of model
         renderer.renderSolid(model.getPartial("handle"), light);
-
+        // Genrate offset for each component
         float xOffset = -1/16f;
+        // Rotate cog around central points
         ms.translate(-xOffset, 0, 0);
         ms.mulPose(Vector3f.ZP.rotationDegrees(ScrollValueHandler.getScroll(AnimationTickHolder.getPartialTicks())));
         ms.translate(xOffset, 0, 0);
@@ -103,13 +104,47 @@ public class DrillToolRender extends CustomRenderedItemModelRenderer<DrillToolMo
                 ms.popPose();
                 ms.pushPose();
             }
+
+            if (ToolUtils.toolContainsComponent(stack, CTComponents.ENCASED_FAN)) {
+                ms.translate(0.5, 0.5, 0.5);
+
+                renderer.renderSolid(model.getPartial("encased_fan"), light);
+
+                ms.popPose();
+                ms.pushPose();
+
+                /*
+                ms.translate(-xOffset, 0, 0);
+                ms.mulPose(Vector3f.ZP.rotationDegrees(ScrollValueHandler.getScroll(AnimationTickHolder.getPartialTicks())));
+                ms.translate(xOffset, 0, 0);
+                 */
+                ms.translate(0.5, 0.5, 0.5);
+
+                renderer.renderSolid(model.getPartial("fan_blades"), light);
+
+                ms.popPose();
+                ms.pushPose();
+            }
+
+            if (ToolUtils.toolContainsComponent(stack, CTComponents.ROTATIONAL_SPEED_CONTROLLER)) {
+                ms.translate(0.5, 0.5, 0.5);
+
+                renderer.renderSolid(model.getPartial("rsc"), light);
+
+                ms.popPose();
+                ms.pushPose();
+            }
         }
 
         CTGeneratorTypes generatorType = ToolUtils.getGeneratorType(stack);
         switch (generatorType.getId()) {
-            case 0 -> {}
+            case 0 -> {
 
-            case 1 -> {}
+            }
+
+            case 1 -> {
+
+            }
 
             case 2 -> {
                 ms.translate(0.5, 0.5, 0.5);
